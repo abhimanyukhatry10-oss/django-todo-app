@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<h2>Add New Task</h2>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label">
+            Title
+        </label>
+
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Description
+        </label>
+
+        {{ form.description }}
+    </div>
+
+    <div class="form-check mb-3">
+
+        {{ form.completed }}
+
+        <label class="form-check-label">
+            Completed
+        </label>
+
+    </div>
+
+    <button class="btn btn-primary">
+
+        Save Task
+
+    </button>
+
+</form>
+
+<hr>
+
+<h3>All Tasks</h3>
+
+{% if tasks %}
+
+<ul>
+
+{% for task in tasks %}
+
+<li>
+
+<strong>{{ task.title }}</strong>
+
+<br>
+
+{{ task.description }}
+
+<br>
+
+{% if task.completed %}
+✅ Completed
+{% else %}
+❌ Pending
+{% endif %}
+
+<br>
+
+<a class="btn btn-warning btn-sm"
+href="{% url 'update_task' task.id %}">
+Edit
+</a>
+
+<a class="btn btn-danger btn-sm"
+href="{% url 'delete_task' task.id %}">
+Delete
+</a>
+
+<hr>
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+{% else %}
+
+<p>No Tasks Available.</p>
+
+{% endif %}
+
+{% endblock %}
