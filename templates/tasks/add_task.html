@@ -37,7 +37,20 @@ Home
         </label>
 
     </div>
+    <div class="mb-3">
+        <label class="form-label">
+            Priority
+        </label>
 
+        {{ form.priority }}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">
+            Due Date
+        </label>
+
+        {{ form.due_date }}
+    </div>
     <button class="btn btn-primary">
 
         Save Task
@@ -47,7 +60,28 @@ Home
 </form>
 
 <hr>
+<form method="GET" class="mb-3">
 
+    <div class="input-group">
+
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search tasks..."
+            value="{{ request.GET.search }}">
+
+        <button class="btn btn-dark">
+            Search
+        </button>
+        {% if request.GET.search %}
+            <a href="{% url 'add_task' %}" class="btn btn-secondary">
+                Reset
+            </a>
+        {% endif %}
+    </div>
+
+</form>
 <h3>All Tasks</h3>
 
 {% if tasks %}
@@ -60,6 +94,16 @@ Home
 
 <strong>{{ task.title }}</strong>
 
+{% if task.priority == "High" %}
+    <span class="badge bg-danger">High</span>
+
+{% elif task.priority == "Medium" %}
+    <span class="badge bg-warning text-dark">Medium</span>
+
+{% else %}
+    <span class="badge bg-success">Low</span>
+
+{% endif %}
 <br>
 
 {{ task.description }}
@@ -73,7 +117,12 @@ Home
 {% endif %}
 
 <br>
-
+{% if task.due_date %}
+    <small class="text-muted">
+        Due: {{ task.due_date }}
+    </small>
+{% endif %}
+<br>
 <a class="btn btn-warning btn-sm"
 href="{% url 'update_task' task.id %}">
 Edit
