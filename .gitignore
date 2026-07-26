@@ -1,10 +1,10 @@
-
 # Python
 __pycache__/
 *.py[cod]
 
 # Virtual Environment
 venv/
+env/
 
 # Database
 db.sqlite3
@@ -15,8 +15,11 @@ db.sqlite3
 # VS Code
 .vscode/
 
-# Static files (optional)
-staticfiles/
-
 # macOS
 .DS_Store
+
+# Static files collected during deployment
+staticfiles/
+
+# Media files (optional)
+media/

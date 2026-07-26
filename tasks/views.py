@@ -10,10 +10,17 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q #Q object se hum advanced filtering kar sakte hain.
+from django.core.paginator import Paginator
+from datetime import date
+from django.db.models import Case, When, Value, IntegerField
 
 @login_required
 def add_task(request):
     search = request.GET.get("search")
+    priority = request.GET.get("priority")
+    status = request.GET.get("status")
+    sort = request.GET.get("sort")
+    print(status)
     if request.method == "POST":
         form = TaskForm(request.POST)
 
@@ -29,17 +36,95 @@ def add_task(request):
 
     tasks = Task.objects.filter(user=request.user)
 
+    if priority:
+        tasks = tasks.filter(
+        priority=priority
+    )
+
+    if status == "completed":
+        tasks = tasks.filter(completed=True)
+
+    elif status == "pending":
+        tasks = tasks.filter(completed=False)    
+
     if search:
         tasks = tasks.filter(
             Q(title__icontains=search) |
             Q(description__icontains=search)
         )
 
-    tasks = tasks.order_by("-created_at")
+    if sort == "oldest":
+        tasks = tasks.order_by("created_at")
+
+    elif sort == "title":
+        tasks = tasks.order_by("title")
+
+    elif sort == "due_date":
+        tasks = tasks.order_by("due_date")
+
+    elif sort == "priority":
+
+        tasks = tasks.annotate(
+
+            priority_order=Case(
+
+                When(priority="High", then=Value(1)),
+
+                When(priority="Medium", then=Value(2)),
+
+                When(priority="Low", then=Value(3)),
+
+                output_field=IntegerField()
+
+                )
+        ).order_by("priority_order")
+
+    else:
+        tasks = tasks.order_by("-created_at")
+
+    paginator = Paginator(tasks, 5)   # Har page par 5 tasks
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
+    total_tasks = tasks.count()
+
+    completed_tasks = tasks.filter(completed=True).count()
+
+    pending_tasks = tasks.filter(completed=False).count()
+
+    if total_tasks > 0:
+        progress = (completed_tasks / total_tasks) * 100
+    else:
+        progress = 0
+
+    today = date.today()
+
+    high_priority_tasks = tasks.filter(
+        priority="High"
+    ).count()
+
+    medium_priority_tasks = tasks.filter(
+        priority="Medium"
+    ).count()
+
+    low_priority_tasks = tasks.filter(
+        priority="Low"
+        ).count()
 
     context = {
         'form': form,
-        'tasks': tasks
+        'tasks': page_obj,
+        "page_obj": page_obj,
+        "total_tasks": total_tasks,
+        "completed_tasks": completed_tasks,
+        "pending_tasks": pending_tasks,
+        "progress": round(progress),
+        "today": today,
+        "high_priority_tasks": high_priority_tasks,
+        "medium_priority_tasks": medium_priority_tasks,
+        "low_priority_tasks": low_priority_tasks,
     }
 
     return render(request, 'tasks/add_task.html', context)
