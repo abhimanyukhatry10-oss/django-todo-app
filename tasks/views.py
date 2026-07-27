@@ -13,6 +13,9 @@ from django.db.models import Q #Q object se hum advanced filtering kar sakte hai
 from django.core.paginator import Paginator
 from datetime import date
 from django.db.models import Case, When, Value, IntegerField
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+
 
 @login_required
 def add_task(request):
@@ -238,3 +241,21 @@ def logout_user(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect("login")
+
+
+
+
+def create_superuser(request):
+    username = "admin"
+    password = "Admin@12345"
+    email = "admin@example.com"
+
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password
+        )
+        return HttpResponse("Superuser created successfully!")
+
+    return HttpResponse("Superuser already exists.")
