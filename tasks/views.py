@@ -245,17 +245,3 @@ def logout_user(request):
 
 
 
-def create_superuser(request):
-    username = "admin"
-    password = "Admin@12345"
-    email = "admin@example.com"
-
-    if not User.objects.filter(username=username).exists():
-        User.objects.create_superuser(
-            username=username,
-            email=email,
-            password=password
-        )
-        return HttpResponse("Superuser created successfully!")
-
-    return HttpResponse("Superuser already exists.")
