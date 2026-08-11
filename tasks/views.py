@@ -1,8 +1,4 @@
-from django.shortcuts import render
-
-# Create your views here.
-
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404 #Agar object mil jaye to object return karta hai, aur agar na mile to automatically 404 page return karta hai.
 from .models import Task
 from django.contrib import messages
 from .forms import TaskForm, RegisterForm
@@ -18,7 +14,7 @@ from django.contrib.auth.models import User
 
 
 @login_required
-def add_task(request):
+def add_task(request): # request Django khud banata hai. request bahut powerful object hai.
     search = request.GET.get("search")
     priority = request.GET.get("priority")
     status = request.GET.get("status")
@@ -28,16 +24,16 @@ def add_task(request):
         form = TaskForm(request.POST)
 
         if form.is_valid():
-            task = form.save(commit=False)
+            task = form.save(commit=False) #"Object bana do, lekin abhi database me save mat karo."
             task.user = request.user
             task.save()
-            messages.success(request, "Task added successfully.")
-            return redirect('add_task')
+            messages.success(request, "Task added successfully.") #Ye sirf message ko request/session me temporarily store karti hai.
+            return redirect('add_task') #Post → Redirect → Get (PRG) pattern
 
     else:
         form = TaskForm()
 
-    tasks = Task.objects.filter(user=request.user)
+    tasks = Task.objects.filter(user=request.user) #Lazy Evaluation -> yahan sql query nahi chalti. 
 
     if priority:
         tasks = tasks.filter(
@@ -135,18 +131,18 @@ def add_task(request):
 def update_task(request, id):
 
     task = get_object_or_404(Task,id=id,user=request.user)
-
+    #get_object_or_404() hamesha ek single model object return karta hai, QuerySet nahi.
     if request.method == "POST":
 
         form = TaskForm(request.POST, instance=task)   #"Naya object mat banao, isi existing object ko update karo."
 
         if form.is_valid():
-            task = form.save(commit=False)
-            task.user = request.user
-            task.save()
+            task = form.save()
+            #task.user = request.user
+            #task.save()
             messages.success(request, "Task updated successfully.")
             return redirect('add_task')
-
+            #Aur yahan task.user = request.user ki zarurat strictly nahi hai, kyunki existing task ka user already present hai aur TaskForm me user field included nahi hai.
     else:
 
         form = TaskForm(instance=task)
@@ -206,16 +202,18 @@ def login_user(request):
 
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
+            #cleaned_data ek dictionary hoti hai jisme form.is_valid() successful hone ke baad validated data store hota hai.
 
             user = authenticate(
                 username=username,
                 password=password
             )
+            #authenticate() username aur password verify karta hai. Agar credentials sahi hain to User object return karta hai, warna None return karta hai.
 
             if user is not None:
 
                 login(request, user)
-
+                #login() user ka session create karta hai aur us user ko logged-in mark kar deta hai.
                 messages.success(
                     request,
                     f"Welcome {user.username}!"
@@ -238,9 +236,10 @@ def login_user(request):
     )
 
 def logout_user(request):
-    logout(request)
+    logout(request) #Session destroy karta hai.
     messages.success(request, "You have been logged out successfully.")
     return redirect("login")
+
 
 
 

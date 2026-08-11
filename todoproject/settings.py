@@ -36,10 +36,10 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.admin', #admin panel
+    'django.contrib.auth', #login logout users permissions
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.sessions', #User login hone ke baad session maintain karta hai.
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tasks',
@@ -65,9 +65,10 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request', #{{ request.user }} in templates
+                'django.contrib.auth.context_processors.auth',#{% if user.is_authenticated %} in templates
+                'django.contrib.messages.context_processors.messages', #Ye messages framework ko templates me available karata hai.
+                #Agar ye context processor hata diya, to template me messages variable hi nahi milega.
             ],
         },
     },
@@ -82,7 +83,7 @@ WSGI_APPLICATION = 'todoproject.wsgi.application'
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
+        conn_max_age=600,#Lekin conn_max_age=600 se Django kuch time tak same connection reuse karta hai, jisse performance improve hoti hai.
     )
 }
 
@@ -92,16 +93,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',#Password username se bahut similar hai.
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',#Password minimum length se chhota hai.
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',#12345678 Ye bahut common passwords hain.
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',#Agar password sirf numbers ho:12345 to reject
     },
 ]
 
@@ -113,9 +114,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = "Asia/Kolkata"
 
-USE_I18N = True
+USE_I18N = True #Internationalization Ye Django ko multiple languages support karne me help karta hai.
 
-USE_TZ = True
+USE_TZ = True 
 
 
 # Static files (CSS, JavaScript, Images)
@@ -124,6 +125,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-LOGIN_URL = "login"
+LOGIN_URL = "login" 
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 

@@ -9,9 +9,9 @@ class Task(models.Model):
         on_delete=models.CASCADE
     )
 
-    title = models.CharField(max_length=200)
-
-    description = models.TextField(blank=True)
+    title = models.CharField(max_length=200) #Isliye CharField ka relation SQL ke VARCHAR se hota hai.
+    #CharField me max_length mandatory hai.
+    description = models.TextField(blank=True) #description is optional
 
     completed = models.BooleanField(default=False)
 

@@ -1,10 +1,10 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html> <!--Ye browser ko batata hai: "Ye HTML5 document hai."-->
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><!--Browser ko batata hai ki page ka text UTF-8 character encoding use karta hai.-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--Browser ko bolo ki page ki width device ki actual screen width ke according rakho.-->
 
     <title>
         {% block title %}
@@ -24,22 +24,24 @@
     <div class="container">
 
         <a class="navbar-brand fw-bold" href="{% url 'add_task' %}">
-            <i class="bi bi-check2-square"></i>
+            <i class="bi bi-check2-square"></i><!--bi -> Ye Bootstrap Icons ki base class hai./////////bi-check2-square - Ye specific icon ki class hai.-->
             Django To-Do App
         </a>
 
         <button
-            class="navbar-toggler"
+            class="navbar-toggler" 
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarNav">
+            data-bs-target="#navbarNav"><!--class="navbar-toggler" Bootstrap class hai; mobile navbar ka toggle button style karti hai.
+            data-bs-target -> Bootstrap ko batata hai ki kis element ko collapse/expand karna hai.
+            -->
 
             <span class="navbar-toggler-icon"></span>
-
+<!--navbar-toggler-icon Bootstrap ki class hai jo button ke andar hamburger/menu icon (☰) dikhati hai.-->
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-
+            <!--<div> ka use webpage ke elements ko ek group/container me rakhne ke liye hota hai.-->
             <ul class="navbar-nav ms-auto align-items-lg-center">
 
                 <li class="nav-item me-lg-3">
